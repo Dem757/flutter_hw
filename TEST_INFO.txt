@@ -1,3 +1,4 @@
-<NEPTUN KÓD>
-<bloc/provider>
-<Házi feladat értékelése>
+L1VF38
+bloc
+Szerintem összességében érdekes volt, egyszerre jó és rossz is az előre specifikált feladat, mivel így kevésbé érzi magáénak az ember a munkát mintha ő találta volna ki a feladatot.
+Ugyanakkor a feladat specifikáltsága miatt könnyebb volt a munka, mivel nem kellett sokat gondolkodni azon, hogy mit is kellene csinálni.
