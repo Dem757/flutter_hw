@@ -2,6 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_homework/network/data_source_interceptor.dart';
+import 'package:flutter_homework/ui/bloc/list/list_bloc.dart';
+import 'package:flutter_homework/ui/bloc/list/list_page.dart';
+import 'package:flutter_homework/ui/bloc/login/login_bloc.dart';
+import 'package:flutter_homework/ui/bloc/login/login_page.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,15 +44,28 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      //DO NOT MODIFY
-      navigatorObservers: GetIt.I<List<NavigatorObserver>>(),
-      //DO NOT MODIFY
-      debugShowCheckedModeBanner: false,
-    );
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => LoginBloc(),
+          ),
+          BlocProvider(create: (context) => ListBloc()),
+        ],
+        child: MaterialApp(
+          title: 'Flutter Demo',
+          home: LoginPageBloc(),
+          initialRoute: '/',
+          routes: {
+            '/login': (context) => (LoginPageBloc()),
+            '/list': (context) => (ListPageBloc()),
+          },
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          //DO NOT MODIFY
+          navigatorObservers: GetIt.I<List<NavigatorObserver>>(),
+          //DO NOT MODIFY
+          debugShowCheckedModeBanner: false,
+        ));
   }
 }

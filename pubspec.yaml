@@ -39,6 +39,7 @@ dependencies:
   shared_preferences: ^2.2.2
   username_gen: ^1.0.4
   equatable: ^2.0.5
+  form_field_validator: ^1.1.0
 
 dev_dependencies:
   flutter_test:
