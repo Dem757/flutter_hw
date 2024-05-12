@@ -12,23 +12,32 @@ part 'list_state.dart';
 class ListBloc extends Bloc<ListEvent, ListState> {
   ListBloc() : super(ListInitial()) {
     on<ListLoadEvent>((event, emit) async {
-      emit(ListLoading());
-      try {
-        var res = await GetIt.I<Dio>().get(
-            '/users',
-            options: Options(headers: {
-              'Authorization': 'Bearer ${GetIt.I<SharedPreferences>().getString('token')}'
-            })
-        );
-        List<UserItem> users = [];
-        for (var user in res.data) {
-          users.add(UserItem(user['name'], user['avatar']));
+      if (state != ListLoading()) {
+        try {
+            emit(ListLoading());
+            var res = await GetIt.I<Dio>().get(
+                '/users',
+                options: Options(headers: {
+                  'Authorization': '${GetIt
+                      .I<Dio>()
+                      .options
+                      .headers['Authorization']}'
+                })
+            ).catchError((e) {
+               emit(ListError(e.response?.data['message'] ?? 'An error occurred'));
+            });
+            List<UserItem> users = [];
+            for (var user in res.data) {
+              users.add(UserItem(
+                  user['name'].toString(), user['avatarUrl'].toString()));
+            }
+            emit(ListLoaded(users));
+        } on DioException catch (e) {
+          emit(ListError(e.response?.data['message'] ?? 'An error occurred'));
         }
-
-      } on DioException catch (e){
-        emit(ListError(e.response?.data['message'] ?? 'An error occurred'));
       }
     });
 
   }
 }
+

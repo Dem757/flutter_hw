@@ -23,6 +23,35 @@ class _ListPageBlocState extends State<ListPageBloc> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      body: Center (
+      child: BlocConsumer<ListBloc, ListState>(
+        listener: (context, state) {
+          if (state is ListError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        },
+        builder: (context, state) {
+          if (state is ListLoading) {
+            return const CircularProgressIndicator();
+          } else if (state is ListLoaded) {
+            return buildList(state.users);
+          } else {
+            context.read<ListBloc>().add(ListLoadEvent());
+            return const SizedBox();
+          }
+        },
+      ),
+      ),
+    );
+  }
+
+  Widget buildList(users) {
+    return Scaffold(
       appBar: AppBar(
         title: const Text('List Page'),
         backgroundColor: Colors.blue,
@@ -30,8 +59,9 @@ class _ListPageBlocState extends State<ListPageBloc> {
         leading: IconButton(
           icon: const Icon(Icons.logout),
           onPressed: () {
-            GetIt.I<SharedPreferences>().clear();
             Navigator.pushReplacementNamed(context, '/');
+            GetIt.I<SharedPreferences>().clear();
+            GetIt.I<Dio>().options.headers.remove('Authorization');
           },
         ),
       ),
@@ -67,6 +97,6 @@ class _ListPageBlocState extends State<ListPageBloc> {
         ),
       ),
 
-      );
+    );
   }
 }

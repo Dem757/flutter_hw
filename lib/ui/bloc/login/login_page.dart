@@ -14,6 +14,7 @@ class _LoginPageBlocState extends State<LoginPageBloc> {
 
   @override
   void initState() {
+    context.read<LoginBloc>().add(LoginAutoLoginEvent());
     super.initState();
   }
   String _email = '';
@@ -46,7 +47,7 @@ class _LoginPageBlocState extends State<LoginPageBloc> {
             if (state is LoginLoading) {
               return const CircularProgressIndicator();
             } else {
-              return buildForm();
+              return buildForm(context, state);
             }
           },
         ),
@@ -54,7 +55,7 @@ class _LoginPageBlocState extends State<LoginPageBloc> {
     );
   }
 
-  Widget buildForm() {
+  Widget buildForm(context, state) {
     return BlocBuilder<LoginBloc, LoginState>(
         builder: (context, state)
     {
@@ -67,15 +68,9 @@ class _LoginPageBlocState extends State<LoginPageBloc> {
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 30.0),
+              const Padding(
+                padding: EdgeInsets.only(top: 30.0),
                 child: Center(
-                  child: SizedBox(
-                    width: 120,
-                    height: 120,
-                    child: Image.network(
-                        'https://cdn-icons-png.flaticon.com/512/61/61457.png'),
-                  ),
                 ),
               ),
               Padding(
@@ -94,14 +89,15 @@ class _LoginPageBlocState extends State<LoginPageBloc> {
                             children: <Widget>[
                               Padding(
                                   padding: const EdgeInsets.all(12.0),
-                                  child: TextFormField(
+                                  child: TextField(
                                       onChanged: (value) {
-                                        if (!EmailValidator(
-                                            errorText: 'Please correct email filled')
-                                            .isValid(value)) {
+                                        if (value.isEmpty) {
                                           setState(() {
-                                            _emailErrorText =
-                                            'Please correct email filled';
+                                            _emailErrorText = '';
+                                          });
+                                        } else if (!EmailValidator(errorText: 'Email is not valid').isValid(value)) {
+                                          setState(() {
+                                            _emailErrorText = 'Email is not valid';
                                           });
                                         } else {
                                           setState(() {
@@ -117,9 +113,7 @@ class _LoginPageBlocState extends State<LoginPageBloc> {
                                           prefixIcon: const Icon(
                                             Icons.email,
                                           ),
-                                          errorStyle: const TextStyle(
-                                              fontSize: 18.0),
-                                          errorText: _emailErrorText.isEmpty
+                                          errorText:  _emailErrorText.isEmpty
                                               ? null
                                               : "Email is not valid",
                                           border: const OutlineInputBorder(
@@ -129,11 +123,13 @@ class _LoginPageBlocState extends State<LoginPageBloc> {
                                                   Radius.circular(9.0)))))),
                               Padding(
                                 padding: const EdgeInsets.all(12.0),
-                                child: TextFormField(
+                                child: TextField(
                                   onChanged: (value) {
-                                    if (!MinLengthValidator(6,
-                                        errorText: 'Password must be at least 6 digit')
-                                        .isValid(value)) {
+                                    if (value.isEmpty) {
+                                      setState(() {
+                                        _passwordErrorText = '';
+                                      });
+                                    } else if (value.length < 6) {
                                       setState(() {
                                         _passwordErrorText =
                                         'Password must be at least 6 digit';

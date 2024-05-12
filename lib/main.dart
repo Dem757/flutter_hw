@@ -53,11 +53,10 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           title: 'Flutter Demo',
-          home: LoginPageBloc(),
           initialRoute: '/',
           routes: {
-            '/login': (context) => (LoginPageBloc()),
-            '/list': (context) => (ListPageBloc()),
+            '/': (context) => (const LoginPageBloc()),
+            '/list': (context) => (const ListPageBloc()),
           },
           theme: ThemeData(
             primarySwatch: Colors.blue,
