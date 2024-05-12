@@ -32,7 +32,7 @@ class _LoginPageBlocState extends State<LoginPageBloc> {
         child: BlocConsumer<LoginBloc, LoginState>(
           listener: (context, state) {
             if (state is LoginSuccess) {
-              Navigator.pushNamed(context, '/list');
+              Navigator.pushReplacementNamed(context, '/list');
             } else if (state is LoginError) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

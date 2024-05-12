@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,6 +22,51 @@ class _ListPageBlocState extends State<ListPageBloc> {
 
   @override
   Widget build(BuildContext context) {
-    throw UnimplementedError('Page not implemented!');
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('List Page'),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.logout),
+          onPressed: () {
+            GetIt.I<SharedPreferences>().clear();
+            Navigator.pushReplacementNamed(context, '/');
+          },
+        ),
+      ),
+      body: Center(
+        child: BlocConsumer<ListBloc, ListState>(
+          listener: (context, state) {
+            if (state is ListError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+          },
+          builder: (context, state) {
+            if (state is ListLoading) {
+              return const CircularProgressIndicator();
+            } else if (state is ListLoaded) {
+              return ListView.builder(
+                itemCount: state.users.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(state.users[index].name),
+                    leading: Image.network(state.users[index].avatarUrl),
+                  );
+                },
+              );
+            } else {
+              return const SizedBox();
+            }
+          },
+        ),
+      ),
+
+      );
   }
 }
