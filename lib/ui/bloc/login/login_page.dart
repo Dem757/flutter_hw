@@ -192,7 +192,7 @@ class _LoginPageBlocState extends State<LoginPageBloc> {
                                     ),
                                     onPressed: isLoading ? null :() {
                                       if (_emailErrorText.isEmpty &&
-                                          _passwordErrorText.isEmpty) {
+                                          _passwordErrorText.isEmpty && _email.isNotEmpty && _password.isNotEmpty) {
                                         context.read<LoginBloc>().add(
                                             LoginSubmitEvent(_email, _password,
                                                 _rememberMe));

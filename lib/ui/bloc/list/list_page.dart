@@ -23,6 +23,19 @@ class _ListPageBlocState extends State<ListPageBloc> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('List Page'),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.logout),
+          onPressed: () {
+            GetIt.I<Dio>().options.headers.clear();
+            GetIt.I<SharedPreferences>().clear();
+            Navigator.pushReplacementNamed(context, '/');
+          },
+        ),
+      ),
       body: Center (
       child: BlocConsumer<ListBloc, ListState>(
         listener: (context, state) {
@@ -34,6 +47,10 @@ class _ListPageBlocState extends State<ListPageBloc> {
               ),
             );
           }
+          if (state is ListLoading) {
+            GetIt.I<Dio>().options.headers['Authorization'] =
+            'Bearer ${GetIt.I<SharedPreferences>().getString('token')}';
+          }
         },
         builder: (context, state) {
           if (state is ListLoading) {
@@ -42,7 +59,7 @@ class _ListPageBlocState extends State<ListPageBloc> {
             return buildList(state.users);
           } else {
             context.read<ListBloc>().add(ListLoadEvent());
-            return const SizedBox();
+            return const Scaffold();
           }
         },
       ),
@@ -52,19 +69,6 @@ class _ListPageBlocState extends State<ListPageBloc> {
 
   Widget buildList(users) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('List Page'),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.logout),
-          onPressed: () {
-            Navigator.pushReplacementNamed(context, '/');
-            GetIt.I<SharedPreferences>().clear();
-            GetIt.I<Dio>().options.headers.remove('Authorization');
-          },
-        ),
-      ),
       body: Center(
         child: BlocConsumer<ListBloc, ListState>(
           listener: (context, state) {

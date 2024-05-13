@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,10 +27,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           GetIt
               .I<Dio>()
               .options
-              .headers['Authorization'] = 'Bearer ${token.data['token']}';
+              .headers['Authorization'] = 'Bearer ${token.data['token'].toString()}';
           if (event.rememberMe) {
             GetIt.I<SharedPreferences>().setString(
-                'token', token.data['token']);
+                'token', token.data['token'].toString());
           }
           emit(LoginSuccess());
           emit(LoginForm());
@@ -41,16 +42,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     });
 
     on<LoginAutoLoginEvent>((event, emit) async {
-        if (GetIt.I<SharedPreferences>().containsKey('token')) {
-          var token = GetIt.I<SharedPreferences>().getString('token');
-          if (token != null) {
-            GetIt
-                .I<Dio>()
-                .options
-                .headers['Authorization'] = 'Bearer $token';
-            emit(LoginSuccess());
-          }
+      if (GetIt.I<SharedPreferences>().containsKey('token')) {
+        var token = GetIt.I<SharedPreferences>().getString('token');
+        if (token != null) {
+          GetIt.I<Dio>().options.headers['Authorization'] = 'Bearer $token';
+          emit(LoginSuccess());
         }
+      }
     });
 
   }

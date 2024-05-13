@@ -15,17 +15,7 @@ class ListBloc extends Bloc<ListEvent, ListState> {
       if (state != ListLoading()) {
         try {
             emit(ListLoading());
-            var res = await GetIt.I<Dio>().get(
-                '/users',
-                options: Options(headers: {
-                  'Authorization': '${GetIt
-                      .I<Dio>()
-                      .options
-                      .headers['Authorization']}'
-                })
-            ).catchError((e) {
-               emit(ListError(e.response?.data['message'] ?? 'An error occurred'));
-            });
+          var res = await GetIt.I<Dio>().get('/users');
             List<UserItem> users = [];
             for (var user in res.data) {
               users.add(UserItem(
