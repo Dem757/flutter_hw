@@ -56,7 +56,7 @@ class DataSourceInterceptor extends Interceptor {
               for (int i = 0; i < 40; i++)
                 {
                   'name': generator.generate(),
-                  'avatarUrl': 'https://placealpaca.com/${100 + i}/${100 + i}?',
+                  'avatarUrl': 'https://source.unsplash.com/random/${100 + i}x${100 + i}',
                 }
             ],
           ),
