@@ -20,6 +20,14 @@ class _ListPageBlocState extends State<ListPageBloc> {
     super.initState();
   }
 
+  void _signOut(BuildContext context) async {
+    // Remove the value from SharedPreferences
+    await GetIt.I<SharedPreferences>().remove('token');
+
+    // Navigate back to the root route
+    Navigator.pushReplacementNamed(context, '/');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,9 +38,7 @@ class _ListPageBlocState extends State<ListPageBloc> {
         leading: IconButton(
           icon: const Icon(Icons.logout),
           onPressed: () {
-            GetIt.I<Dio>().options.headers.clear();
-            GetIt.I<SharedPreferences>().clear();
-            Navigator.pushReplacementNamed(context, '/');
+            _signOut(context);
           },
         ),
       ),
